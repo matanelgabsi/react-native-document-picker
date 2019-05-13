@@ -88,6 +88,17 @@ RCT_EXPORT_METHOD(show:(NSDictionary *)options
   };
 }
 
+- (void)documentMenuWasCancelled:(UIDocumentMenuViewController *)documentMenu {
+  RCTResponseSenderBlock callback = [[self composeCallbacks] lastObject];
+  [[self composeCallbacks] removeLastObject];
+  if ([callback isKindOfClass:[NSDictionary class]]) {
+    RCTPromiseResolveBlock resolve = [callback objectForKey: @"resolver"];
+    resolve(nil);
+  } else {
+    ((RCTResponseSenderBlock)callback)(@[[NSNull null], [NSNull null]]);
+  }
+}
+
 - (void)documentPickerWasCancelled:(UIDocumentPickerViewController *)controller {
   RCTResponseSenderBlock callback = [[self composeCallbacks] lastObject];
   [[self composeCallbacks] removeLastObject];
